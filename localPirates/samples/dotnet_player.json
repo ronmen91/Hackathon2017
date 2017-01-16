@@ -1,0 +1,5 @@
+﻿{
+	"exe": "C:\\Program Files\\dotnet\\dotnet.exe",
+	"args": [ "the_dll.dll" ],
+	"workDir": ".\\samples"
+}

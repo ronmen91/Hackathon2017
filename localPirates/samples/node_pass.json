@@ -1,0 +1,5 @@
+﻿{
+	"exe": "C:\\Program Files\\nodejs\\node.exe",
+	"args": [ "pass.js" ],
+	"workDir": ".\\samples"
+}
