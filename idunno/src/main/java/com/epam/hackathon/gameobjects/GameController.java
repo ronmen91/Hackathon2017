@@ -220,6 +220,7 @@ public class GameController {
 			game.getTeamB().setScore(game.getTeamB().getScore() + 1);
 		}
 		strategy.dangerIslandList.clear();
+		strategy.danger = false;
 	}
 
 	public void endMatch(JsonObject message) {

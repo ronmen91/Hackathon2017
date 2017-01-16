@@ -1,6 +1,7 @@
 package com.epam.hackathon.strategy;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,22 +27,29 @@ public class DiagonalStrategy extends Strategy {
 
 	List<Island> islandsGoodForMe = new ArrayList<>();
 	List<Island> islandsVERYGoodForMe = new ArrayList<>();
+	boolean danger;
 
 	private final Logger logger = LoggerFactory.getLogger(DiagonalStrategy.class);
 
 	public DiagonalStrategy(Game game) {
 		super(game);
 		dangerIslandList = new ArrayList<>();
+		danger = false;
 	}
 
 	@Override
 	public BidResponse bid(int countryIndex) {
+		for (int i = 0; i < 6; i++) {
+			if(blockEnemyIslandIfWeMustBool(i)) {
+				danger = true;
+			}
+		}
 		if (blockEnemyIslandIfWeMust(countryIndex) != null) {
 			return blockEnemyIslandIfWeMust(countryIndex);
 		}
 		
 		List<Island> possibleIslands = getPossibleIslands(countryIndex);
-		if(dangerIslandList.size() != 0){
+		if(dangerIslandList.size() != 0 || danger){
 			List<Island> commonEnemy = getCommonIslands(dangerIslandList, possibleIslands);
 			if (commonEnemy.size() > 0) {
 				BidIsland response = new BidIsland();
@@ -167,6 +175,23 @@ public class DiagonalStrategy extends Strategy {
 				return new RandomStrategy(game).bid(countryIndex);
 			}
 		}
+	}
+
+	private boolean blockEnemyIslandIfWeMustBool(int i) {
+		EnemyBlocker emEnemyBlocker = new EnemyBlocker(game);
+		List<Island> availableIslands = new ArrayList<>();
+		for (Island island : game.getCountries().get(i).getIslands()) {
+			if (island.getOwner() == null) {
+				availableIslands.add(island);
+			}
+		}
+		Island islandToBlock = emEnemyBlocker.tryToBlock(availableIslands);
+		if (islandToBlock != null) {
+			return true;
+		} else {
+			return false;
+		}
+		
 	}
 
 	private BidResponse blockEnemyIslandIfWeMust(int countryIndex) {
